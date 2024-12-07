@@ -1,5 +1,7 @@
 import {Menu} from "./menu.js";
-import { Player } from './player.js';
+import {Player} from './player.js';
+import {Map} from "./map.js";
+import {getTankSize} from "./functions/getTanksSize.js";
 
 export class Game {
     constructor(canvas, context) {
@@ -7,7 +9,8 @@ export class Game {
         this.context = context;
         this.currentState = 'menu';
         this.menu = new Menu(canvas, context);
-        this.player = new Player(canvas.width / 2 - 20, canvas.height / 2 - 20, canvas);
+        this.map = new Map(canvas);
+        this.player = new Player(0, canvas.height - getTankSize(canvas), canvas);
         window.addEventListener('keydown', (e) => this.handleInput(e));
 
         this.keys = {}; // Objeto para almacenar el estado de las teclas
@@ -39,27 +42,27 @@ export class Game {
 
     handleInputOnMenu(e) {
         if (e.key === 'Enter') {
-          const result = this.menu.executeOption();
-          if (result === 'start') {
-            this.currentState = 'playing';
-          } else if (result === 'quit') {
-            this.currentState = 'quit';
-          }
+            const result = this.menu.executeOption();
+            if (result === 'start') {
+                this.currentState = 'playing';
+            } else if (result === 'quit') {
+                this.currentState = 'quit';
+            }
         } else {
-          this.menu.handleInput(e);
+            this.menu.handleInput(e);
         }
-      }
+    }
 
     handleKeyDown(e) {
         if (this.currentState === 'playing') {
             this.keys[e.key] = true;
-    
+
             if (e.key === 'Escape') {
-                this.currentState = 'menu';
+                this.handleEscapeWhileGaming();
             }
         }
     }
-    
+
     handleKeyUp(e) {
         if (this.currentState === 'playing') {
             this.keys[e.key] = false; // Marcar la tecla como no presionada
@@ -72,24 +75,29 @@ export class Game {
 
     handleInputOnPlaying(e) {
         if (e.key === 'Escape') {
-            this.currentState = 'menu';
+            this.handleEscapeWhileGaming()
         }
-      }
-      
+    }
 
-      update() {
+    handleEscapeWhileGaming() {
+        this.currentState = 'menu';
+        this.map = new Map(this.canvas);
+        this.player = new Player(0, this.canvas.height - getTankSize(this.canvas), this.canvas);
+    }
+
+    update() {
         if (this.currentState === 'playing') {
             // Manejar movimiento
             if (this.keys['ArrowUp']) {
-                this.player.move('up');
+                this.player.move('up', this.map.blocks);
             } else if (this.keys['ArrowDown']) {
-                this.player.move('down');
+                this.player.move('down', this.map.blocks);
             } else if (this.keys['ArrowLeft']) {
-                this.player.move('left');
+                this.player.move('left', this.map.blocks);
             } else if (this.keys['ArrowRight']) {
-                this.player.move('right');
+                this.player.move('right', this.map.blocks);
             }
-    
+
             this.player.update(); // Actualizar estado del jugador (balas, etc.)
         }
     }
@@ -109,7 +117,30 @@ export class Game {
 
         // Actualizar y dibujar el jugador
         this.player.update();
+        this.checkBulletCollisions();
+
+        this.map.draw(this.context);
         this.player.draw(this.context);
+    }
+
+    checkBulletCollisions() {
+        this.player.bullets.forEach((bullet, bIndex) => {
+            // Verificar colisiones con bloques del mapa
+            for (let block of this.map.blocks) {
+                if (this.isColliding(bullet, block) && !block.bulletPass) {
+                    if (block.destructible) {
+                        block.takeDamage();
+                    }
+                    // Eliminar la bala
+                    this.player.bullets.splice(bIndex, 1);
+                    break; // Dejar de verificar cuando una bala se ha eliminado
+                }
+            }
+        });
+    }
+
+    isColliding(a, b) {
+        return (a.x < b.x + b.width && a.x + a.size > b.x && a.y < b.y + b.height && a.y + a.size > b.y);
     }
 
     renderQuit() {
