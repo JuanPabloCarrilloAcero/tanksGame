@@ -112,7 +112,7 @@ export class Game {
         }
     }
 
-    renderGame() {
+    /*renderGame() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Actualizar y dibujar el jugador
@@ -121,7 +121,29 @@ export class Game {
 
         this.map.draw(this.context);
         this.player.draw(this.context);
-    }
+    }*/
+        renderGame() { //Se crean los bloques que no son arbustos -> jugador -> arbustos, para que se pueda ocultar
+
+            // Limpiar el canvas
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+            // Dibujar bloques que no son 'arbustos'
+            this.map.blocks.forEach(block => {
+                if (block.type !== 'bush') {
+                    block.draw(this.context);
+                }
+            });
+            this.player.draw(this.context);
+        
+            this.map.blocks.forEach(block => {
+                if (block.type === 'bush') {
+                    block.draw(this.context);
+                }
+            });
+        
+            this.checkBulletCollisions();
+        }
+        
 
     checkBulletCollisions() {
         this.player.bullets.forEach((bullet, bIndex) => {

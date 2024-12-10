@@ -173,6 +173,9 @@ class Bullet {
         context.fillStyle = 'yellow';
         context.beginPath();
         context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+        context.strokeStyle = 'red';
+        context.lineWidth = 3; 
+        context.stroke();
         context.fill();
     }
 }
