@@ -116,6 +116,9 @@ export class Game {
 
             // Limpiar el canvas
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+             // fondo gris
+            this.context.fillStyle = '#454545';
+            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
             // Dibujar bloques que no son 'arbustos'
             this.map.blocks.forEach(block => {
