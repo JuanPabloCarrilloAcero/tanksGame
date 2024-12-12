@@ -112,16 +112,6 @@ export class Game {
         }
     }
 
-    /*renderGame() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Actualizar y dibujar el jugador
-        this.player.update();
-        this.checkBulletCollisions();
-
-        this.map.draw(this.context);
-        this.player.draw(this.context);
-    }*/
         renderGame() { //Se crean los bloques que no son arbustos -> jugador -> arbustos, para que se pueda ocultar
 
             // Limpiar el canvas
