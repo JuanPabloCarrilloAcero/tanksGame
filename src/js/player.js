@@ -1,20 +1,22 @@
 import {getTankSize} from "./functions/getTanksSize.js";
 
 export class Player {
-    constructor(x, y, canvas) {
+    constructor(x, y, canvas, imagePath) {
         this.x = x; // Posición X del tanque
         this.y = y; // Posición Y del tanque
         this.width = getTankSize(canvas); // Ancho del tanque
         this.height = getTankSize(canvas); // Alto del tanque
         this.speed = 2; // Velocidad de movimiento
         this.direction = 'up'; // Dirección inicial
+        this.health = 30;
+        this.alive = true;
         this.canvas = canvas;
         this.bullets = []; // Arreglo para las balas
         this.cooldown = 0; // Tiempo de recarga entre disparos
 
         // Imagen del tanque
         this.image = new Image();
-        this.image.src = '/src/assets/player_tank.png';
+        this.image.src = imagePath;
 
         this.image.onload = () => {
             this.imageLoaded = true;
@@ -140,6 +142,17 @@ export class Player {
             this.bullets.push(new Bullet(this.x + this.width / 2, this.y + this.height / 2, this.direction));
             this.cooldown = 50; // Ajusta el tiempo de recarga según sea necesario
         }
+    }
+
+    takeDamage() {
+        this.health -= 10; // Disminuir salud
+        if (this.health <= 0) {
+            this.alive = false;
+        }
+    }
+
+    isAlive(){
+        return this.alive;
     }
 }
 

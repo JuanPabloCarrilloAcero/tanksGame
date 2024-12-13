@@ -10,7 +10,11 @@ export class Game {
         this.currentState = 'menu';
         this.menu = new Menu(canvas, context);
         this.map = new Map(canvas);
-        this.player = new Player(0, canvas.height - getTankSize(canvas), canvas);
+        this.player1 = new Player(0, canvas.height - getTankSize(canvas), canvas,'/src/assets/player1_tank.png');
+        this.player2 = new Player(canvas.width - getTankSize(canvas), 0, canvas, '/src/assets/player2_tank.png');
+
+        this.players = [this.player1, this.player2];
+
         window.addEventListener('keydown', (e) => this.handleInput(e));
 
         this.keys = {}; // Objeto para almacenar el estado de las teclas
@@ -67,8 +71,11 @@ export class Game {
         if (this.currentState === 'playing') {
             this.keys[e.key] = false; // Marcar la tecla como no presionada
 
-            if (e.key === ' ') { // Disparar al soltar la tecla
-                this.player.shoot();
+            // Disparo de jugadores
+            if (e.key === '.') {
+                this.player1.shoot();
+            } else if (e.key === ' ') {
+                this.player2.shoot();
             }
         }
     }
@@ -82,80 +89,106 @@ export class Game {
     handleEscapeWhileGaming() {
         this.currentState = 'menu';
         this.map = new Map(this.canvas);
-        this.player = new Player(0, this.canvas.height - getTankSize(this.canvas), this.canvas);
+        this.player1 = new Player(0, this.canvas.height - getTankSize(this.canvas), this.canvas,'/src/assets/player1_tank.png');
+        this.player2 = new Player(this.canvas.width - getTankSize(this.canvas), 0, this.canvas,'/src/assets/player2_tank.png');
+        this.players = [this.player1, this.player2];
     }
 
-    update() {
-        if (this.currentState === 'playing') {
-            // Manejar movimiento
-            if (this.keys['ArrowUp']) {
-                this.player.move('up', this.map.blocks);
-            } else if (this.keys['ArrowDown']) {
-                this.player.move('down', this.map.blocks);
-            } else if (this.keys['ArrowLeft']) {
-                this.player.move('left', this.map.blocks);
-            } else if (this.keys['ArrowRight']) {
-                this.player.move('right', this.map.blocks);
+        update() {
+            if (this.currentState === 'playing') {
+                this.players.forEach(player => {
+                    // Movimiento del jugador 1
+                    if (player === this.player1) {
+                        if (this.keys['ArrowUp']) player.move('up', this.map.blocks);
+                        if (this.keys['ArrowDown']) player.move('down', this.map.blocks);
+                        if (this.keys['ArrowLeft']) player.move('left', this.map.blocks);
+                        if (this.keys['ArrowRight']) player.move('right', this.map.blocks);
+                    }
+    
+                    // Movimiento del jugador 2
+                    if (player === this.player2) {
+                        if (this.keys['w']) player.move('up', this.map.blocks);
+                        if (this.keys['s']) player.move('down', this.map.blocks);
+                        if (this.keys['a']) player.move('left', this.map.blocks);
+                        if (this.keys['d']) player.move('right', this.map.blocks);
+                    }
+
+                    player.update();
+                });
+    
+                this.checkWinCondition();
             }
-
-            this.player.update(); // Actualizar estado del jugador (balas, etc.)
         }
-    }
+
+        checkWinCondition() {
+            const playersAlive = this.players.filter(player => player.isAlive());
+            if (playersAlive.length === 1) {
+                this.currentState = 'win';
+                this.winner = playersAlive[0] === this.player1 ? 'Player 1' : 'Player 2';
+            }
+        }
 
     render() {
         if (this.currentState === 'menu') {
             this.menu.render();
         } else if (this.currentState === 'playing') {
             this.renderGame();
-        } else if (this.currentState === 'quit') {
+        } else if (this.currentState === 'win') {
+            this.renderWin();
+        }else if (this.currentState === 'quit') {
             this.renderQuit();
         }
     }
 
-        renderGame() { //Se crean los bloques que no son arbustos -> jugador -> arbustos, para que se pueda ocultar
-
-            // Limpiar el canvas
-            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-             // fondo gris
-            this.context.fillStyle = '#454545';
-            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            renderGame() {//Se crean los bloques que no son arbustos -> jugador -> arbustos, para que se pueda ocultar
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.context.fillStyle = '#454545';
+                this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-            // Dibujar bloques que no son 'arbustos'
-            this.map.blocks.forEach(block => {
-                if (block.type !== 'bush') {
-                    block.draw(this.context);
-                }
-            });
-            this.player.draw(this.context);
+                this.map.blocks.forEach(block => {
+                    if (block.type !== 'bush') block.draw(this.context);
+                });
         
-            this.map.blocks.forEach(block => {
-                if (block.type === 'bush') {
-                    block.draw(this.context);
-                }
-            });
+                this.players.forEach(player => player.draw(this.context));
         
-            this.checkBulletCollisions();
-        }
+                this.map.blocks.forEach(block => {
+                    if (block.type === 'bush') block.draw(this.context);
+                });
         
-
-    checkBulletCollisions() {
-        this.player.bullets.forEach((bullet, bIndex) => {
-            // Verificar colisiones con bloques del mapa
-            for (let block of this.map.blocks) {
-                if (this.isColliding(bullet, block) && !block.bulletPass) {
-                    if (block.destructible) {
-                        block.takeDamage();
-                    }
-                    // Eliminar la bala
-                    this.player.bullets.splice(bIndex, 1);
-                    break; // Dejar de verificar cuando una bala se ha eliminado
-                }
+                this.players.forEach(player => this.checkBulletCollisions(player));
             }
-        });
-    }
+   
+        checkBulletCollisions(player) {
+            player.bullets.forEach((bullet, bIndex) => {
+                // Verificar colisión con bloques del mapa
+                for (let block of this.map.blocks) {
+                    if (this.isColliding(bullet, block) && !block.bulletPass) {
+                        if (block.destructible) block.takeDamage();
+                        player.bullets.splice(bIndex, 1);
+                        return; 
+                    }
+                }
+        
+                // Verificar colisión con otros jugadores
+                this.players.forEach(opponent => {
+                    if (opponent !== player && this.isColliding(bullet, opponent)) {
+                        opponent.takeDamage(); // Ejecutar la función takeDamage
+                        player.bullets.splice(bIndex, 1);
+                        return; 
+                    }
+                });
+            });
+        }
 
     isColliding(a, b) {
         return (a.x < b.x + b.width && a.x + a.size > b.x && a.y < b.y + b.height && a.y + a.size > b.y);
+    }
+    renderWin() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.context.font = '30px Segoe UI';
+        this.context.fillStyle = 'white';
+        this.context.textAlign = 'center';
+        this.context.fillText(`Ganó el jugador: ${this.winner}`, this.canvas.width / 2, this.canvas.height / 2);
     }
 
     renderQuit() {

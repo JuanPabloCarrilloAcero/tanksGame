@@ -14,7 +14,7 @@ export class Block {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.type = type; // 'brick', 'steel', 'bush', 'water', empty
+        this.type = type; // 'brick', 'steel', 'bush', 'water', 'empty'
         this.destructible = this.isDestructible();
         this.passable = this.isPassable();
         this.bulletPass = this.isBulletPassable();
