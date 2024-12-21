@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'ArcadeClassic';
+    src: url('/src/assets/fonts/arcadeclassic.ttf') format('truetype');
+}
+
 body {
     margin: 0;
     background: black;
