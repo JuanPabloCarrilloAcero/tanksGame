@@ -30,9 +30,8 @@ export class Menu {
 
     render() {        
         
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);        
-    
-        // Asegúrate de que la imagen esté cargada antes de dibujarla
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);            
+        
         if(this.mainMenuImageLoaded){
             this.context.drawImage(this.mainMenuImage,this.canvas.width / 2 - 255, 100, 530, 300);
         }

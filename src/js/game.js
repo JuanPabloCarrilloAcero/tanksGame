@@ -98,20 +98,40 @@ export class Game {
             if (this.currentState === 'playing') {
                 this.players.forEach(player => {
                     // Movimiento del jugador 1
-                    if (player === this.player1) {
-                        if (this.keys['ArrowUp']) player.move('up', this.map.blocks);
-                        if (this.keys['ArrowDown']) player.move('down', this.map.blocks);
-                        if (this.keys['ArrowLeft']) player.move('left', this.map.blocks);
-                        if (this.keys['ArrowRight']) player.move('right', this.map.blocks);
+                if (player === this.player1) {
+                    let direction = null;
+                    if (this.keys['ArrowRight']) {
+                        direction = 'right';
+                    } else if (this.keys['ArrowLeft'] && !this.keys['ArrowRight']) {
+                        direction = 'left';
+                    } else if (this.keys['ArrowDown'] && !this.keys['ArrowLeft'] && !this.keys['ArrowRight']) {
+                        direction = 'down';
+                    } else if (this.keys['ArrowUp'] && !this.keys['ArrowDown'] && !this.keys['ArrowRight'] && !this.keys['ArrowLeft']) {
+                        direction = 'up';
                     }
-    
-                    // Movimiento del jugador 2
-                    if (player === this.player2) {
-                        if (this.keys['w']) player.move('up', this.map.blocks);
-                        if (this.keys['s']) player.move('down', this.map.blocks);
-                        if (this.keys['a']) player.move('left', this.map.blocks);
-                        if (this.keys['d']) player.move('right', this.map.blocks);
+
+                    if (direction) {
+                        player.move(direction, this.map.blocks);
                     }
+                }
+
+                // Movimiento del jugador 2
+                if (player === this.player2) {
+                    let direction = null;
+                    if (this.keys['d']) {
+                        direction = 'right';
+                    } else if (this.keys['a'] && !this.keys['d']) {
+                        direction = 'left';
+                    } else if (this.keys['s'] && !this.keys['a'] && !this.keys['d'] ) {
+                        direction = 'down';
+                    } else if (this.keys['w'] && !this.keys['s'] && !this.keys['d'] && !this.keys['a']) {
+                        direction = 'up';
+                    }
+
+                    if (direction) {
+                        player.move(direction, this.map.blocks);
+                    }
+                }
 
                     player.update();
                 });
