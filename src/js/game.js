@@ -162,7 +162,8 @@ export class Game {
 
             renderGame() {//Se crean los bloques que no son arbustos -> jugador -> arbustos, para que se pueda ocultar
                 this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.context.fillStyle = '#454545';
+                //this.context.fillStyle = '#454545';
+                this.context.fillStyle = 'black';
                 this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
                 this.map.blocks.forEach(block => {

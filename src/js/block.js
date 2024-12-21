@@ -18,16 +18,52 @@ export class Block {
         this.destructible = this.isDestructible();
         this.passable = this.isPassable();
         this.bulletPass = this.isBulletPassable();
+        this.sprites_sheet = new Image();
+        this.sprites_sheet.src = `/src/assets/sprites_sheet.png`;
+        this.sprites_sheet_loaded = false;
+        this.sprites_sheet.onload = () => {
+            this.sprites_sheet_loaded = true;
+        }
+        
+        // Animación
+        this.frameIndex = 0; // Frame actual para bloques animados
+        this.animationSpeed = 40; // Velocidad de animación (menor = más rápido)
+        this.frameCounter = 0; // Contador para controlar la velocidad
+
     }
 
-    draw(context) {
-        const image = imageArray[this.type];
-        if (image.complete) {
-            context.drawImage(image, this.x, this.y, this.width, this.height);
+    draw(context) {       
+        if (this.sprites_sheet_loaded) {            
+            let sprite;
+
+            // Selecciona el sprite correspondiente al tipo
+            if (this.type === 'water') {
+                // Alterna entre los frames del agua
+                sprite = imageArray[this.type][this.frameIndex];
+                this.animate();
+            } else {
+                sprite = imageArray[this.type];
+            }
+
+            // Dibujar el sprite en el canvas
+            context.drawImage(
+                this.sprites_sheet, 
+                sprite.x, sprite.y, sprite.width, sprite.height, // Coordenadas del sprite en el sheet
+                this.x, this.y, this.width, this.height // Coordenadas en el canvas
+            );
         } else {
             // Placeholder
-            context.fillStyle = 'gray';
+            context.fillStyle = 'black';
             context.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+
+    animate() {
+        // Incrementa el contador de frames
+        this.frameCounter++;
+        if (this.frameCounter >= this.animationSpeed) {
+            this.frameCounter = 0; // Reinicia el contador
+            this.frameIndex = (this.frameIndex + 1) % imageArray[this.type].length; // Alterna entre 0 y 1
         }
     }
 
