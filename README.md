@@ -33,9 +33,9 @@ Para correr el proyecto, puede utilizar una de las siguientes opciones:
      - Haga clic derecho en el archivo `index.html` dentro de la carpeta `src` y seleccione "Open with Live Server".
 
 2. **Usando Python:**
-     - Abra una terminal y navegue hasta la carpeta `src` del proyecto.
+     - Abra una terminal y navegue hasta la carpeta `TanksGame` del proyecto.
      - Ejecute el siguiente comando:
          ```bash
          python -m http.server
          ```
-     - Abra su navegador web y vaya a `http://localhost:8000` para ver el juego en acción.
+     - Abra su navegador web y vaya a `http://localhost:8000` y haga click en `src` para ver el juego en acción.
