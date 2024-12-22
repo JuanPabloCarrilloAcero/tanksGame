@@ -138,7 +138,7 @@ export class Player {
     }
 
     shoot() {
-        if (this.cooldown === 0) {
+        if (this.bullets.length === 0) {
             this.bullets.push(new Bullet(this.x + this.width / 2, this.y + this.height / 2, this.direction));
             this.cooldown = 50; // Ajusta el tiempo de recarga según sea necesario
         }
@@ -160,7 +160,7 @@ class Bullet {
     constructor(x, y, direction) {
         this.x = x;
         this.y = y;
-        this.speed = 2;
+        this.speed = 7;
         this.size = 5;
         this.direction = direction;
     }
