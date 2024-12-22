@@ -11,8 +11,8 @@ export class Game {
         this.currentState = 'menu';
         this.menu = new Menu(canvas, context);
         this.map = new Map(canvas);
-        this.player1 = new Player(0, canvas.height - getTankSize(canvas), canvas,'/src/assets/player1_tank.png');
-        this.player2 = new Player(canvas.width - getTankSize(canvas), 0, canvas, '/src/assets/player2_tank.png');
+        this.player1 = new Player(canvas.width/2-25, canvas.height - getTankSize(canvas), canvas,'/src/assets/player1_tank.png','up');
+        this.player2 = new Player(canvas.width/2-25, 0, canvas, '/src/assets/player2_tank.png','down');
 
         this.players = [this.player1, this.player2];
 
@@ -187,6 +187,7 @@ export class Game {
                 for (let block of this.map.blocks) {
                     if (this.isColliding(bullet, block) && !block.bulletPass) {
                         if (block.destructible) block.takeDamage();
+                        else playAudio('steel_hit');//Reproducir sonido de acero golpeado
                         player.bullets.splice(bIndex, 1);
                         return; 
                     }
@@ -203,7 +204,7 @@ export class Game {
             });
         }
 
-    isColliding(a, b) {
+    isColliding(a, b) {        
         return (a.x < b.x + b.width && a.x + a.size > b.x && a.y < b.y + b.height && a.y + a.size > b.y);
     }
     renderWin() {

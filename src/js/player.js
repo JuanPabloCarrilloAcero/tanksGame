@@ -2,13 +2,13 @@ import {getTankSize} from "./functions/getTanksSize.js";
 import { playAudio } from './functions/playAudio.js';
 
 export class Player {
-    constructor(x, y, canvas, imagePath) {
+    constructor(x, y, canvas, imagePath,direction) {
         this.x = x; // Posición X del tanque
         this.y = y; // Posición Y del tanque
         this.width = getTankSize(canvas); // Ancho del tanque
         this.height = getTankSize(canvas); // Alto del tanque
         this.speed = 3; // Velocidad de movimiento
-        this.direction = 'up'; // Dirección inicial
+        this.direction = direction; // Dirección inicial
         this.health = 30;
         this.alive = true;
         this.canvas = canvas;

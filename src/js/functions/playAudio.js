@@ -6,6 +6,7 @@ const audioFiles = {
     game_start: new Audio('/src/assets/audio/game_start.mp3'),
     tank_moving: new Audio('/src/assets/audio/tank_moving.wav'),
     tank_idle: new Audio('/src/assets/audio/tank_idle.wav'),
+    steel_hit: new Audio('/src/assets/audio/steel_hit.wav'),
 };
 
 export function playAudio(sound) {
@@ -16,6 +17,7 @@ export function playAudio(sound) {
     audioFiles.game_start.volume = 0.5;
     audioFiles.tank_moving.volume = 0.5;
     audioFiles.tank_idle.volume = 0.5;
+    audioFiles.steel_hit.volume = 0.5;
     if (audioFiles[sound]) {
         audioFiles[sound].currentTime = 0; // Reinicia el sonido si ya está reproduciéndose
         audioFiles[sound].play();
