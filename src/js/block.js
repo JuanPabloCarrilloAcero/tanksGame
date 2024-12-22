@@ -70,6 +70,7 @@ export class Block {
     // If destructible
     takeDamage() {
         if (this.destructible) {
+            //Agregar animación explosión
             this.type = 'empty';
             this.destructible = this.isDestructible();
             this.passable = this.isPassable();

@@ -6,7 +6,7 @@ export class Player {
         this.y = y; // Posición Y del tanque
         this.width = getTankSize(canvas); // Ancho del tanque
         this.height = getTankSize(canvas); // Alto del tanque
-        this.speed = 2; // Velocidad de movimiento
+        this.speed = 3; // Velocidad de movimiento
         this.direction = 'up'; // Dirección inicial
         this.health = 30;
         this.alive = true;
