@@ -209,7 +209,7 @@ export class Game {
     }
     renderWin() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.font = '30px Segoe UI';
+        this.context.font = '30px Press Start 2P';
         this.context.fillStyle = 'white';
         this.context.textAlign = 'center';
         this.context.fillText(`Ganó el jugador: ${this.winner}`, this.canvas.width / 2, this.canvas.height / 2);
@@ -217,7 +217,7 @@ export class Game {
 
     renderQuit() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.font = '30px Segoe UI';
+        this.context.font = '30px Press Start 2P';
         this.context.fillStyle = 'white';
         this.context.textAlign = 'center';
         this.context.fillText('Game Over', this.canvas.width / 2, this.canvas.height / 2);
