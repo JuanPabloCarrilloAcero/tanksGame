@@ -1,4 +1,5 @@
 import {getTankSize} from "./functions/getTanksSize.js";
+import { playAudio } from './functions/playAudio.js';
 
 export class Player {
     constructor(x, y, canvas, imagePath) {
@@ -139,14 +140,17 @@ export class Player {
 
     shoot() {
         if (this.bullets.length === 0) {
+            playAudio('shoot');
             this.bullets.push(new Bullet(this.x + this.width / 2, this.y + this.height / 2, this.direction));
             this.cooldown = 50; // Ajusta el tiempo de recarga según sea necesario
         }
     }
 
     takeDamage() {
+        playAudio('hit');
         this.health -= 10; // Disminuir salud
         if (this.health <= 0) {
+            playAudio('explosion');
             this.alive = false;
         }
     }

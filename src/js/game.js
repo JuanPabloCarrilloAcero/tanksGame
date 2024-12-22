@@ -2,6 +2,7 @@ import {Menu} from "./menu.js";
 import {Player} from './player.js';
 import {Map} from "./map.js";
 import {getTankSize} from "./functions/getTanksSize.js";
+import {playAudio} from './functions/playAudio.js';
 
 export class Game {
     constructor(canvas, context) {
@@ -48,6 +49,7 @@ export class Game {
         if (e.key === 'Enter') {
             const result = this.menu.executeOption();
             if (result === 'start') {
+                playAudio('game_start');
                 this.currentState = 'playing';
             } else if (result === 'quit') {
                 this.currentState = 'quit';

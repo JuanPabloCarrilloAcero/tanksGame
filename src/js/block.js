@@ -1,4 +1,5 @@
 import {getBlockImage} from "./functions/getBlockImage.js";
+import { playAudio } from "./functions/playAudio.js";
 
 const imageArray = {
     brick: getBlockImage('brick'),
@@ -70,6 +71,7 @@ export class Block {
     // If destructible
     takeDamage() {
         if (this.destructible) {
+            playAudio('brick_hit'); // Reproducir sonido de ladrillo golpeado
             //Agregar animación explosión
             this.type = 'empty';
             this.destructible = this.isDestructible();
